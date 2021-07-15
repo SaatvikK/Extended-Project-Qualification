@@ -7,15 +7,15 @@ class person:
   def __init__(self):
     return;
   
-  def means(self, ages):
+  def means(self, atts):
     """
     self.MeanAge, self.MeanSex, self.MeanOnThyroxine, self.MeanQueryOnThyroxine, self.MeanOnAntiThyroidMeds, self.MeanSick, self.MeanPregnant, 
     self.MeanThyroidSurgery, self.MeanI131Treatment, self.MeanQueryHypo, self.MeanQueryHyper, self.MeanLithium, self.Meanhyperthyroid, self.MeanTumor, 
     self.MeanHypopituitary, self.MeanPsych, self.MeanTSHMeasured, self.MeanTSH, self.MeanT3Measured, self.MeanTT4, self.MeanT4UMeasured, self.MeanT4U, 
     self.MeanFTIMeasured, self.MeanFTI, self.MeanTBGMeasured += 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
     """
-    for i in range(len(ages)):
-      self.MeanAge += ages[i];
+    for i in range(len(atts["Age"])):
+      self.MeanAge += int(ages[i];
     
     self.MeanAge /= len(ages);
 
