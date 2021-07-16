@@ -1,4 +1,4 @@
-Age,Sex,OnThyroxine,QueryOnThyroxine,OnAntiThyroidMeds,Sick,Pregnant,ThyroidSurgery,I131Treatment,QueryHypo,QueryHyper,Lithium,hyperthyroid,Tumor,Hypopituitary,Psych,TSHMeasured,TSH,T3Measured,T3,TT4Measured,TT4,T4UMeasured,T4U,FTIMeasured,FTI,TBGMeasured,ClassiFalseication
+,Sex,OnThyroxine,QueryOnThyroxine,OnAntiThyroidMeds,Sick,Pregnant,ThyroidSurgery,I131Treatment,QueryHypo,QueryHyper,Lithium,hyperthyroid,Tumor,Hypopituitary,Psych,TSHMeasured,TSH,T3Measured,T3,TT4Measured,TT4,T4UMeasured,T4U,FTIMeasured,FTI,TBGMeasured,ClassiFalseication
 63,M,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,3.5,True,2.5,True,108,True,0.96,True,113,False,negative.|2059
 25,F,False,False,False,False,False,False,False,False,False,False,False,False,False,False,True,4.6,True,2.4,True,61,True,0.82,True,75,False,negative.|399
 53,F,False,False,False,False,False,False,False,True,False,False,False,False,False,False,True,0.25,True,2.1,True,145,True,1.03,True,141,False,negative.|1911
