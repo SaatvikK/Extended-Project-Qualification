@@ -14,65 +14,24 @@ class main():
     return;
   
   def getAtts(self, data):
-    atts = {
-      "Age": [], 
-      "Sex": [],
-      "OnThyroxine": [],
-      "QueryOnThyroxine": [], 
-      "OnAntiThyroidMeds": [], 
-      "Sick": [], 
-      "Pregnant": [], 
-      "ThyroidSurgery": [], 
-      "I131Treatment": [], 
-      "QueryHypo": [], 
-      "QueryHyper": [], 
-      "Lithium": [], 
-      "hyperthyroid": [], 
-      "Tumor": [], 
-      "Hypopituitary": [], 
-      "Psych": [], 
-      "TSHMeasured": [], 
-      "TSH": [], 
-      "T3Measured": [], 
-      "T3": [], 
-      "TT4Measured": [], 
-      "TT4": [], 
-      "T4UMeasured": [], 
-      "T4U": [], 
-      "FTIMeasured": [], 
-      "FTI": [], 
-      "TBGMeasured": []
-    };
+    atts = [
+            [], #age
+            [], #sex
+            [], #tsh
+            [], #t3
+            [], #tt4
+            [], #t4u
+            [] #fti
+           ];
 
     for i in range(len(data)):
-      atts["Age"].append(int(data[0]));
-      atts["Sex"].append(str(data[1]));
-      atts["OnThyroxine"].append(bool(data[2]));
-      atts["QueryOnThyroxine"].append(bool(data[3]));
-      atts["OnAntiThyroidMeds"].append(bool(data[4]));
-      atts["Sick"].append(bool(data[5]));
-      atts["Pregnant"].append(bool(data[6]));
-      atts["ThyroidSurgery"].append(bool(data[7]));
-      atts["I131Treatment"].append(bool(data[8]));
-      atts["QueryHypo"].append(bool(data[9]));
-      atts["QueryHyper"].append(bool(data[10]));
-      atts["Lithium"].append(bool(data[11]));
-      atts["hyperthyroid"].append(bool(data[12]));
-      atts["Tumor"].append(bool(data[13]));
-      atts["Hypopituitary"].append(bool(data[14]));
-      atts["Psych"].append(bool(data[15]));
-      atts["TSHMeasured"].append(bool(data[16]));
-      atts["TSH"].append(float(data[17]));
-      atts["T3Measured"].append(bool(data[18]));
-      atts["T3"].append(float(data[19]));
-      atts["TT4Measured"].append(bool(data[20]));
-      atts["TT4"].append(float(data[21]));
-      atts["T4UMeasured"].append(bool(data[22]));
-      atts["T4U"].append(float(data[23]));
-      atts["FTIMeasured"].append(bool(data[24]));
-      atts["FTI"].append(int(data[25]));
-      atts["TBGMeasured"].append(bool(data[26]));
-  
+      atts[0].append(int(data[0]));
+      atts[1].append(str(data[1]));
+      atts[2].append(float(data[2]));
+      atts[3].append(float(data[3]));
+      atts[4].append(float(data[4]));
+      atts[5].append(float(data[5]));
+      atts[6].append(int(data[6]));
     return atts;
 
   def readCSV(self):
