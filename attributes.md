@@ -1,17 +1,19 @@
-# Descriptions of Attributes
+;
 ; Thyroid disease records supplied by the Garavan Institute and J. Ross
 ; Quinlan, New South Wales Institute, Syndney, Australia.
 ;
 ; 1987.
 ;
 
+**Hypothyroid Original Classifications**
+hypothyroid, primary hypothyroid [High TSH], compensated [asymptomatic] hypothyroid, secondary hypothyroid [Low TSH], negative.	|  classes#
+
+**Hyperthyroid Original Classifications**
 hyperthyroid, T3 toxic, goitre, secondary toxic, negative.	|  classes
 
-
+**Attributes**
 age:				continuous.
 sex:				M, F.
-
-**Booleans (but not the ones that say continuous)**
 on thyroxine:			f, t.
 query on thyroxine:		f, t.
 on antithyroid medication:	f, t.
@@ -38,6 +40,4 @@ FTI measured:			f, t.
 FTI:				continuous.
 TBG measured:			f, t.
 TBG:				continuous.
-
-**Other**
 referral source:		WEST, STMW, SVHC, SVI, SVHD, other.
