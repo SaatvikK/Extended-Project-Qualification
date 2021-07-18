@@ -6,6 +6,8 @@
 
 ########### Importing Modules ###########
 import csv;
+import numpy as np;
+from ClassOutcomes import classOutcome;
 ###################################
 
 
@@ -47,10 +49,12 @@ class main():
       
       return data;
 
+  
   def main(self):
     data = self.readCSV();
     res = getAtts(data);
-    atts, ClassOutcomes = res[0], res[1];
+    atts, classes = res[0], res[1];
     
-
-main().main();
+hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
+obj = main();
+obj.main();
