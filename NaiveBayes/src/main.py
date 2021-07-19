@@ -39,7 +39,6 @@ class main():
       ClassOutcomes.apppend(str(data[7]));
     return [atts, ClassOutcomes];
 
-
   def readCSV(self):
     with open('../../training.csv', 'r') as file:
       data = [];
