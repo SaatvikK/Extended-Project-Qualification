@@ -6,6 +6,8 @@
 
 ########### Importing Modules ###########
 import csv;
+import numpy as np;
+from ClassOutcomes import classOutcome;
 ###################################
 
 
@@ -23,6 +25,8 @@ class main():
             [], #t4u
             [] #fti
            ];
+    
+    ClassOutcomes = [] #hypo, hyper, negative/no.
 
     for i in range(len(data)):
       atts[0].append(int(data[0]));
@@ -32,7 +36,8 @@ class main():
       atts[4].append(float(data[4]));
       atts[5].append(float(data[5]));
       atts[6].append(int(data[6]));
-    return atts;
+      ClassOutcomes.apppend(str(data[7]));
+    return [atts, ClassOutcomes];
 
   def readCSV(self):
     with open('../../training.csv', 'r') as file:
@@ -43,9 +48,12 @@ class main():
       
       return data;
 
+  
   def main(self):
     data = self.readCSV();
-    atts = getAtts(data);
+    res = getAtts(data);
+    atts, classes = res[0], res[1];
     
-
-main().main();
+hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
+obj = main();
+obj.main();
