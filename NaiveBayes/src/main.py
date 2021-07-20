@@ -55,6 +55,9 @@ class main():
     hypo.generalProbabilityClass(outcomes, "hypothyroid");
     hyper.generalProbabilityClass(outcomes, "hyperthyroid");
     no.generalProbabilityClass(outcomes, "no");
+    #print("h1", hypo.GeneralProbability)
+    #print("h2", hyper.GeneralProbability)
+    #print("h3", no.GeneralProbability)
 
   def main(self):
     data = self.readCSV();
@@ -63,17 +66,21 @@ class main():
 
     ########################
     TempAtts = atts;
-    #print(atts[1])
-    TempAtts.remove(atts[1]);
-    print(atts)
-    print(TempAtts)
-    hypo.findingAttsGivenClasses(TempAtts, classes, "hypothyroid");
-    hypo.pSexGivenClass(res[0], classes, "hypothyroid");
-    hyper.findingAttsGivenClasses(TempAtts, classes, "hyperthyroid");
-    hyper.pSexGivenClass(res[0], classes, "hyperthyroid");
-    no.findingAttsGivenClasses(TempAtts, classes, "no");
-    no.pSexGivenClass(res[0], classes, "no");
+    del TempAtts[1];
 
+    self.generalProbabilities(classes)
+    hypo.findingAttsGivenClasses(TempAtts, classes, "hypothyroid");
+    hypo.pSexGivenClass(self.getAtts(data)[0], classes, "hypothyroid");
+    hyper.findingAttsGivenClasses(TempAtts, classes, "hyperthyroid");
+    hyper.pSexGivenClass(self.getAtts(data)[0], classes, "hyperthyroid");
+    no.findingAttsGivenClasses(TempAtts, classes, "no");
+    no.pSexGivenClass(self.getAtts(data)[0], classes, "no");
+
+    
+    print("hypo", hypo.CondProbAtts)
+    print("hyper", hyper.CondProbAtts)
+    print("no", no.CondProbAtts)
+    
     evidence = (
       (
         hypo.GeneralProbability*
@@ -92,12 +99,11 @@ class main():
         no.CondProbAtts["sexes"]["males"]*no.CondProbAtts["sexes"]["females"]
       )
     )
-    ProbDict = {};
 
     ###################################
-    print("'Hypothyroid' predicted cases:", hypo.SpecificProb(atts, classes, evidence));
-    print("'Hyperthyroid' predicted cases:", hyper.SpecificProb(atts, classes, evidence));
-    print("'No' predicted cases:", no.SpecificProb(atts, classes, evidence));
+    print("'Hypothyroid' predicted cases:", hypo.SpecificProb(evidence));
+    print("'Hyperthyroid' predicted cases:", hyper.SpecificProb(evidence));
+    print("'No' predicted cases:", no.SpecificProb(evidence));
     
 
 hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
