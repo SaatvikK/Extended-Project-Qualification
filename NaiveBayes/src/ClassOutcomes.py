@@ -14,13 +14,16 @@ class classOutcome():
   
   def findMean(self, index, atts, WhichClass, outcomes):
     mean = 0;
+    NumOfAges = 0;
     for i in range(len(atts[index])):
       try: 
-        if(outcomes[i] == WhichClass): mean += float(atts[index][i]);
+        if(outcomes[i] == WhichClass): 
+          mean += float(atts[index][i]);
+          NumOfAges += 1;
 
       except Exception as e: print(e);
-    
-    mean /= len(atts[index]);
+
+    mean /= NumOfAges;
     return mean;
   
   def findVariance(self, index, atts, mean):
@@ -30,7 +33,7 @@ class classOutcome():
       MeanOfSquares += squares[i];
     
     MeanOfSquares /= len(squares);
-    return MeanOfSquares - (mean*mean);
+    return np.absolute(MeanOfSquares - (mean*mean));
   
   def pSexGivenClass(self, atts, outcomes, WhichClass):
     sexes = atts[1];
@@ -42,8 +45,13 @@ class classOutcome():
     self.CondProbAtts["sexes"]["males"] = TotalMales/TotalOutcome
     self.CondProbAtts["sexes"]["females"] = TotalFemales/TotalOutcome;
   
-  def attGivenClass(self, mean, variance):
-    return (1/(2*np.pi*variance))*np.exp((-(np.square(6 - mean)))/(2*np.square(variance))); #19072021 - cant divide by zero error caused by variance returning 0.
+  def attGivenClass(self, mean, variance, t):
+    """
+    (1/(np.sqrt(2*np.pi*variance)))
+    ((-(np.square(6 - mean)))/(2*variance))
+    """
+    thing = (1/(np.sqrt(2*np.pi*variance)))*np.exp(((-(np.square(6 - mean)))/(2*variance)));
+    return thing;
 
   def generalProbabilityClass(self, outcomes, WhichClass):
     ThisClass = 0;
@@ -57,14 +65,18 @@ class classOutcome():
       self.means[i] = self.findMean(i, atts, WhichClass, outcomes);
       self.variances[i] = self.findVariance(i, atts, self.means[i]);
     
-    self.CondProbAtts["age"] = self.attGivenClass(self.means[0], self.variances[0]);
-    self.CondProbAtts["tsh"] = self.attGivenClass(self.means[1], self.variances[1]); 
-    self.CondProbAtts["t3"] = self.attGivenClass(self.means[2], self.variances[2]);
-    self.CondProbAtts["tt4"] = self.attGivenClass(self.means[3], self.variances[3]);
-    self.CondProbAtts["t4u"] = self.attGivenClass(self.means[4], self.variances[4]);
-    self.CondProbAtts["fti"] = self.attGivenClass(self.means[5], self.variances[5]);
+    # exit()
+
+    self.CondProbAtts["age"] = self.attGivenClass(self.means[0], self.variances[0], "b");
+    print(self.CondProbAtts["age"]);
+    
+    self.CondProbAtts["tsh"] = self.attGivenClass(self.means[1], self.variances[1], "n"); 
+    self.CondProbAtts["t3"] = self.attGivenClass(self.means[2], self.variances[2], "n");
+    self.CondProbAtts["tt4"] = self.attGivenClass(self.means[3], self.variances[3], "n");
+    self.CondProbAtts["t4u"] = self.attGivenClass(self.means[4], self.variances[4], "y");
+    self.CondProbAtts["fti"] = self.attGivenClass(self.means[5], self.variances[5], "n");
   
-  def SpecificProb(self, atts, outcomes, evidence):
+  def SpecificProb(self, evidence):
     return ((float(self.GeneralProbability)*
         float(self.CondProbAtts["age"])*float(self.CondProbAtts["tsh"])*float(self.CondProbAtts["t3"])*
         float(self.CondProbAtts["tt4"])*float(self.CondProbAtts["t4u"])*float(self.CondProbAtts["fti"])*
