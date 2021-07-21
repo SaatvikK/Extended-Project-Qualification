@@ -104,7 +104,7 @@ class main():
     print("'Hypothyroid' predicted cases:", hypo.SpecificProb(evidence));
     print("'Hyperthyroid' predicted cases:", hyper.SpecificProb(evidence));
     print("'No' predicted cases:", no.SpecificProb(evidence));
-    
+    ##
 
 hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
 obj = main();
