@@ -1,5 +1,6 @@
 ########### Importing Modules ###########
 import numpy as np;
+import json;
 ###################################
 
 class classOutcome():
@@ -10,7 +11,13 @@ class classOutcome():
     self.TotalMales, self.TotalFemales = 0, 0;
     self.GeneralProbability = 0;
     self.CondProbAtts = {
-      "sexes": {}
+      "sexes": {},
+      "age": [],
+      "tsh": [],
+      "t3": [],
+      "tt4": [],
+      "t4u": [],
+      "fti": []
     };
   
   def findMean(self, index, atts, WhichClass, outcomes):
@@ -40,63 +47,63 @@ class classOutcome():
       except Exception as e: print(e);
     
     MeanOfSquares /= length;
-    print(squares)
-    print(MeanOfSquares)
-    print(mean)
-    print(mean*mean)
-    print(MeanOfSquares - (mean*mean))
-    exit()
     return np.absolute(MeanOfSquares - (mean*mean));
   
   def pSexGivenClass(self, atts, outcomes, WhichClass):
     sexes = atts[1];
-    TotalMalesAndClass, TotalFemalesAndClass = 0, 0;
+    
     for i in range(len(sexes)):
       if((outcomes[i] == WhichClass) and sexes[i] == "M"): 
-        TotalMalesAndClass += 1;
         self.TotalMales += 1
       elif((outcomes[i] == WhichClass) and sexes[i] == "F"): 
-        TotalFemalesAndClass += 1;
         self.TotalFemales += 1;
       
-    self.CondProbAtts["sexes"]["males"] = TotalMalesAndClass/len(sexes);
-    self.CondProbAtts["sexes"]["females"] = TotalFemalesAndClass/len(sexes);
+    self.CondProbAtts["sexes"]["males"] = self.TotalMales/len(sexes);
+    self.CondProbAtts["sexes"]["females"] = self.TotalFemales/len(sexes);
   
-  def attGivenClass(self, mean, variance, t):
-    """
-    (1/(np.sqrt(2*np.pi*variance)))
-    ((-(np.square(6 - mean)))/(2*variance))
-    """
-    thing = (1/(np.sqrt(2*np.pi*variance)))*np.exp(((-(np.square(6 - mean)))/(2*variance)));
+  def attGivenClass(self, mean, variance, val):
+    thing = (1/(np.sqrt(2*np.pi*variance)))*np.exp(((-(np.square(float(val) - mean)))/(2*variance)));
     return thing;
 
-  def generalProbabilityClass(self, outcomes, WhichClass):
-    ThisClass = 0;
-    for i in range(len(outcomes)):
-      if(outcomes[i] == WhichClass): ThisClass += 1;
+  def generalProbabilityClass(self, outcomes, WhichClass, load):
+    if(load == False): #used for training
+      ThisClass = 0;
+      for i in range(len(outcomes)):
+        if(outcomes[i] == WhichClass): ThisClass += 1;
     
-    self.GeneralProbability = ThisClass/len(outcomes);
+      self.GeneralProbability = ThisClass/len(outcomes);
+    else: #used for tesing
+      with open("../../GenProbs.json") as file:
+        data = json.load(file);
+        self.GeneralProbability = data[WhichClass];
 
-  def findingAttsGivenClasses(self, atts, outcomes, WhichClass):
+  def findingAttsGivenClasses(self, atts, outcomes, WhichClass, data):
     for i in range(len(atts)):
       self.means[i] = self.findMean(i, atts, WhichClass, outcomes);
       self.variances[i] = self.findVariance(i, atts, self.means[i], outcomes, WhichClass);
     
     # exit()
 
-    self.CondProbAtts["age"] = self.attGivenClass(self.means[0], self.variances[0], "b");
-    print(self.CondProbAtts["age"]);
-    
-    self.CondProbAtts["tsh"] = self.attGivenClass(self.means[1], self.variances[1], "n"); 
-    self.CondProbAtts["t3"] = self.attGivenClass(self.means[2], self.variances[2], "n");
-    self.CondProbAtts["tt4"] = self.attGivenClass(self.means[3], self.variances[3], "n");
-    self.CondProbAtts["t4u"] = self.attGivenClass(self.means[4], self.variances[4], "y");
-    self.CondProbAtts["fti"] = self.attGivenClass(self.means[5], self.variances[5], "n");
+    for i in range(len(data)):
+      for j in range(len(data[i])):
+        if("Age" in data[i]): break;
+        if(j == 0):
+          self.CondProbAtts["age"].append(self.attGivenClass(self.means[0], self.variances[0], data[i][j]));
+        elif(j == 2):
+          self.CondProbAtts["tsh"].append(self.attGivenClass(self.means[1], self.variances[1], data[i][j]));
+        elif(j == 3):
+          self.CondProbAtts["t3"].append(self.attGivenClass(self.means[2], self.variances[2], data[i][j]));
+        elif(j == 4):
+          self.CondProbAtts["tt4"].append(self.attGivenClass(self.means[3], self.variances[3], data[i][j]));
+        elif(j == 5):
+          self.CondProbAtts["t4u"].append(self.attGivenClass(self.means[4], self.variances[4], data[i][j]));
+        elif(j == 6):
+          self.CondProbAtts["fti"].append(self.attGivenClass(self.means[5], self.variances[5], data[i][j]));
   
-  def SpecificProb(self, evidence):
+  def SpecificProb(self, evidence, i):
     return ((float(self.GeneralProbability)*
-        float(self.CondProbAtts["age"])*float(self.CondProbAtts["tsh"])*float(self.CondProbAtts["t3"])*
-        float(self.CondProbAtts["tt4"])*float(self.CondProbAtts["t4u"])*float(self.CondProbAtts["fti"])*
+        float(self.CondProbAtts["age"][i])*float(self.CondProbAtts["tsh"][i])*float(self.CondProbAtts["t3"][i])*
+        float(self.CondProbAtts["tt4"][i])*float(self.CondProbAtts["t4u"][i])*float(self.CondProbAtts["fti"][i])*
         float(self.CondProbAtts["sexes"]["males"])*float(self.CondProbAtts["sexes"]["females"])/float(evidence)));
     
     

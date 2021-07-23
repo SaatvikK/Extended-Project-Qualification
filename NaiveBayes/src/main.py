@@ -6,7 +6,9 @@
 
 ########### Importing Modules ###########
 import csv;
+import json;
 import numpy as np;
+import pandas as pd;
 from ClassOutcomes import classOutcome;
 #########################################
 
@@ -51,95 +53,107 @@ class main():
   
   
   
-  def generalProbabilities(self, outcomes):
-    hypo.generalProbabilityClass(outcomes, "hypothyroid");
-    hyper.generalProbabilityClass(outcomes, "hyperthyroid");
-    no.generalProbabilityClass(outcomes, "no");
-    #print("h1", hypo.GeneralProbability)
-    #print("h2", hyper.GeneralProbability)
-    #print("h3", no.GeneralProbability)
+  def generalProbabilities(self, outcomes, load):
+    hypo.generalProbabilityClass(outcomes, "hypothyroid", load);
+    hyper.generalProbabilityClass(outcomes, "hyperthyroid", load);
+    no.generalProbabilityClass(outcomes, "no", load);
 
 
   def printShit(self):
-    print("============= HYPOTHYROID =============");
-    print("======= ATTRIBUTES =======");
-    print("== AGE ==");
-    print("Mean:", hypo.means[0]);
-    print("Variance:", hypo.variances[0]);
-    print("=========");
-    print("== SEX ==");
-    print("Total Males:", hypo.TotalMales);
-    print("Total Females:", hypo.TotalFemales);
-    print("=========");
-    print("== TSH ==");
-    print("Mean:", hypo.means[1]);
-    print("Variance:", hypo.variances[1]);
-    print("=========");
-    print("== T3 ==");
-    print("Mean:", hypo.means[2]);
-    print("Variance:", hypo.variances[2]);
-    print("========");
-    print("== TT4 ==");
-    print("Mean:", hypo.means[3]);
-    print("Variance:", hypo.variances[3]);
-    print("=========");
-    print("== T4U ==");
-    print("Mean:", hypo.means[4]);
-    print("Variance:", hypo.variances[4]);
-    print("=========");
-    print("== FTI ==");
-    print("Mean:", hypo.means[5]);
-    print("Variance:", hypo.variances[5]);
-    print("=========");
+    return "";
 
+
+  def saveGeneralProbs(self):
+    try:
+      dict = {
+        "hypothyroid": hypo.GeneralProbability,
+        "hyperthyroid": hyper.GeneralProbability,
+        "no": no.GeneralProbability
+      };
+
+      with open("../../GenProbs.json", "w") as file:
+        json.dump(dict, file);
+      
+      return True;
+    
+    except Exception as e: return False;
+  
+  def evidence(self, i):
+      return (
+        (
+          hypo.GeneralProbability*
+          hypo.CondProbAtts["age"][i]*hypo.CondProbAtts["tsh"][i]*hypo.CondProbAtts["t3"][i]*
+          hypo.CondProbAtts["tt4"][i]*hypo.CondProbAtts["t4u"][i]*hypo.CondProbAtts["fti"][i]*
+          hypo.CondProbAtts["sexes"]["males"]*hypo.CondProbAtts["sexes"]["females"]
+        ) + (
+          hyper.GeneralProbability*
+          hyper.CondProbAtts["age"][i]*hyper.CondProbAtts["tsh"][i]*hyper.CondProbAtts["t3"][i]*
+          hyper.CondProbAtts["tt4"][i]*hyper.CondProbAtts["t4u"][i]*hyper.CondProbAtts["fti"][i]*
+          hyper.CondProbAtts["sexes"]["males"]*hyper.CondProbAtts["sexes"]["females"]
+        ) + (
+          no.GeneralProbability*
+          no.CondProbAtts["age"][i]*no.CondProbAtts["tsh"][i]*no.CondProbAtts["t3"][i]*
+          no.CondProbAtts["tt4"][i]*no.CondProbAtts["t4u"][i]*no.CondProbAtts["fti"][i]*
+          no.CondProbAtts["sexes"]["males"]*no.CondProbAtts["sexes"]["females"]
+        )
+      );
+    
   def main(self):
     data = self.readCSV();
     res = self.getAtts(data);
     atts, classes = res[0], res[1];
+    which = int(input("Testing [1] or training [2]? "));
+    if(which == 1):
+      ########################
+      TempAtts = atts;
+      del TempAtts[1];
 
-    ########################
-    TempAtts = atts;
-    del TempAtts[1];
+      self.generalProbabilities(classes, True)
+      hypo.findingAttsGivenClasses(TempAtts, classes, "hypothyroid", data);
+      hypo.pSexGivenClass(self.getAtts(data)[0], classes, "hypothyroid");
+      hyper.findingAttsGivenClasses(TempAtts, classes, "hyperthyroid", data);
+      hyper.pSexGivenClass(self.getAtts(data)[0], classes, "hyperthyroid");
+      no.findingAttsGivenClasses(TempAtts, classes, "no", data);
+      no.pSexGivenClass(self.getAtts(data)[0], classes, "no");
 
-    self.generalProbabilities(classes)
-    hypo.findingAttsGivenClasses(TempAtts, classes, "hypothyroid");
-    hypo.pSexGivenClass(self.getAtts(data)[0], classes, "hypothyroid");
-    hyper.findingAttsGivenClasses(TempAtts, classes, "hyperthyroid");
-    hyper.pSexGivenClass(self.getAtts(data)[0], classes, "hyperthyroid");
-    no.findingAttsGivenClasses(TempAtts, classes, "no");
-    no.pSexGivenClass(self.getAtts(data)[0], classes, "no");
 
-    
-    #print("hypo", hypo.CondProbAtts)
-    #print("hyper", hyper.CondProbAtts)
-    #print("no", no.CondProbAtts)
-    
-    evidence = (
-      (
-        hypo.GeneralProbability*
-        hypo.CondProbAtts["age"]*hypo.CondProbAtts["tsh"]*hypo.CondProbAtts["t3"]*
-        hypo.CondProbAtts["tt4"]*hypo.CondProbAtts["t4u"]*hypo.CondProbAtts["fti"]*
-        hypo.CondProbAtts["sexes"]["males"]*hypo.CondProbAtts["sexes"]["females"]
-      ) + (
-        hyper.GeneralProbability*
-        hyper.CondProbAtts["age"]*hyper.CondProbAtts["tsh"]*hyper.CondProbAtts["t3"]*
-        hyper.CondProbAtts["tt4"]*hyper.CondProbAtts["t4u"]*hyper.CondProbAtts["fti"]*
-        hyper.CondProbAtts["sexes"]["males"]*hyper.CondProbAtts["sexes"]["females"]
-      ) + (
-        no.GeneralProbability*
-        no.CondProbAtts["age"]*no.CondProbAtts["tsh"]*no.CondProbAtts["t3"]*
-        no.CondProbAtts["tt4"]*no.CondProbAtts["t4u"]*no.CondProbAtts["fti"]*
-        no.CondProbAtts["sexes"]["males"]*no.CondProbAtts["sexes"]["females"]
-      )
-    )
+      predicted, actual = [], [];
+      for i in range(len(hypo.CondProbAtts["age"])):
+        evidence = self.evidence(i);
+        ProbHypo, ProbHyper, ProbNo = hypo.SpecificProb(evidence, i), hyper.SpecificProb(evidence, i), no.SpecificProb(evidence, i);
+        print("COUNT:", i)
+        if((ProbHypo > ProbHyper) and (ProbHypo > ProbNo)):
+          print("================");
+          print("Prediction: hypothyroid");
+          print("Actual:", classes[i]);
+          print("================");
+          predicted.append("hypothyroid");
+          actual.append(classes[i]);
 
-    ###################################
-    print("'Hypothyroid' predicted cases:", hypo.SpecificProb(evidence));
-    print("'Hyperthyroid' predicted cases:", hyper.SpecificProb(evidence));
-    print("'No' predicted cases:", no.SpecificProb(evidence));
-    ##
+        elif((ProbHyper > ProbHypo) and (ProbHyper > ProbNo)):
+          print("================");
+          print("Prediction: hyperthyroid");
+          print("Actual:", classes[i]);
+          print("================");
+          predicted.append("hyperthyroid");
+          actual.append(classes[i]);
 
-    self.printShit();
+        else:
+          print("================");
+          print("Prediction: no");
+          print("Actual:", classes[i]);
+          print("================");
+          predicted.append("no");
+          actual.append(classes[i]);
+      
+
+      # CONFUSION MATRIX
+      PDactual = pd.Series(actual, name = "Actual");
+      PDpredicted = pd.Series(predicted, name = "Predicted")
+      print(pd.crosstab(PDactual, PDpredicted, rownames = ["Actual"], colnames = ["Predicted"], margins = True));
+    else:
+      self.generalProbabilities(classes, False);
+      self.saveGeneralProbs();
 
 hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
 obj = main();
