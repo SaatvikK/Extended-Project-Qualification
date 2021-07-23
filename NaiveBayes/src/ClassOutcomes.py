@@ -7,6 +7,7 @@ class classOutcome():
     self.means = [0, 0, 0, 0, 0, 0]; #age, tsh, t3, tt4, t4u, fti
     self.variances = [0, 0, 0, 0, 0, 0]; #age, tsh, t3, tt4, t4u, fti
     self.pMaleClass, self.pFemaleClass = 0, 0;
+    self.TotalMales, self.TotalFemales = 0, 0;
     self.GeneralProbability = 0;
     self.CondProbAtts = {
       "sexes": {}
@@ -26,24 +27,40 @@ class classOutcome():
     mean /= NumOfAges;
     return mean;
   
-  def findVariance(self, index, atts, mean):
-    squares = np.square(atts[index]);
-    MeanOfSquares = 0;
-    for i in range(len(squares)):
-      MeanOfSquares += squares[i];
+  def findVariance(self, index, atts, mean, outcomes, WhichClass):
+    MeanOfSquares, length = 0, 0;
+    squares = []
+    for i in range(len(atts[index])):
+      try:
+        if(outcomes[i] == WhichClass):
+          MeanOfSquares += (np.square(atts[index][i]));
+          squares.append(np.square(atts[index][i]))
+          length += 1;
+               
+      except Exception as e: print(e);
     
-    MeanOfSquares /= len(squares);
+    MeanOfSquares /= length;
+    print(squares)
+    print(MeanOfSquares)
+    print(mean)
+    print(mean*mean)
+    print(MeanOfSquares - (mean*mean))
+    exit()
     return np.absolute(MeanOfSquares - (mean*mean));
   
   def pSexGivenClass(self, atts, outcomes, WhichClass):
     sexes = atts[1];
-    TotalMales, TotalFemales, TotalOutcome = 0, 0, 0;
+    TotalMalesAndClass, TotalFemalesAndClass = 0, 0;
     for i in range(len(sexes)):
-      if(sexes[i] == "M"): TotalMales += 1;
-      elif(sexes[i] == "F"): TotalFemales += 1;
-      if(outcomes[i] == WhichClass): TotalOutcome += 1
-    self.CondProbAtts["sexes"]["males"] = TotalMales/TotalOutcome
-    self.CondProbAtts["sexes"]["females"] = TotalFemales/TotalOutcome;
+      if((outcomes[i] == WhichClass) and sexes[i] == "M"): 
+        TotalMalesAndClass += 1;
+        self.TotalMales += 1
+      elif((outcomes[i] == WhichClass) and sexes[i] == "F"): 
+        TotalFemalesAndClass += 1;
+        self.TotalFemales += 1;
+      
+    self.CondProbAtts["sexes"]["males"] = TotalMalesAndClass/len(sexes);
+    self.CondProbAtts["sexes"]["females"] = TotalFemalesAndClass/len(sexes);
   
   def attGivenClass(self, mean, variance, t):
     """
@@ -63,7 +80,7 @@ class classOutcome():
   def findingAttsGivenClasses(self, atts, outcomes, WhichClass):
     for i in range(len(atts)):
       self.means[i] = self.findMean(i, atts, WhichClass, outcomes);
-      self.variances[i] = self.findVariance(i, atts, self.means[i]);
+      self.variances[i] = self.findVariance(i, atts, self.means[i], outcomes, WhichClass);
     
     # exit()
 

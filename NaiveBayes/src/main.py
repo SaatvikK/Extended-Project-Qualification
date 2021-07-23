@@ -59,6 +59,39 @@ class main():
     #print("h2", hyper.GeneralProbability)
     #print("h3", no.GeneralProbability)
 
+
+  def printShit(self):
+    print("============= HYPOTHYROID =============");
+    print("======= ATTRIBUTES =======");
+    print("== AGE ==");
+    print("Mean:", hypo.means[0]);
+    print("Variance:", hypo.variances[0]);
+    print("=========");
+    print("== SEX ==");
+    print("Total Males:", hypo.TotalMales);
+    print("Total Females:", hypo.TotalFemales);
+    print("=========");
+    print("== TSH ==");
+    print("Mean:", hypo.means[1]);
+    print("Variance:", hypo.variances[1]);
+    print("=========");
+    print("== T3 ==");
+    print("Mean:", hypo.means[2]);
+    print("Variance:", hypo.variances[2]);
+    print("========");
+    print("== TT4 ==");
+    print("Mean:", hypo.means[3]);
+    print("Variance:", hypo.variances[3]);
+    print("=========");
+    print("== T4U ==");
+    print("Mean:", hypo.means[4]);
+    print("Variance:", hypo.variances[4]);
+    print("=========");
+    print("== FTI ==");
+    print("Mean:", hypo.means[5]);
+    print("Variance:", hypo.variances[5]);
+    print("=========");
+
   def main(self):
     data = self.readCSV();
     res = self.getAtts(data);
@@ -77,9 +110,9 @@ class main():
     no.pSexGivenClass(self.getAtts(data)[0], classes, "no");
 
     
-    print("hypo", hypo.CondProbAtts)
-    print("hyper", hyper.CondProbAtts)
-    print("no", no.CondProbAtts)
+    #print("hypo", hypo.CondProbAtts)
+    #print("hyper", hyper.CondProbAtts)
+    #print("no", no.CondProbAtts)
     
     evidence = (
       (
@@ -105,6 +138,8 @@ class main():
     print("'Hyperthyroid' predicted cases:", hyper.SpecificProb(evidence));
     print("'No' predicted cases:", no.SpecificProb(evidence));
     ##
+
+    self.printShit();
 
 hypo, hyper, no = classOutcome(), classOutcome(), classOutcome();
 obj = main();
