@@ -42,8 +42,8 @@ class main():
     return [atts, ClassOutcomes];
 
 
-  def readCSV(self):
-    with open('../../training.csv', 'r') as file:
+  def readCSV(self, FileName):
+    with open('../' + FileName + '.csv', 'r') as file:
       data = [];
       for row in csv.reader(file):
         if("Age" not in row):
@@ -97,13 +97,42 @@ class main():
           no.CondProbAtts["sexes"]["males"]*no.CondProbAtts["sexes"]["females"]
         )
       );
-    
+
+  def results(self, actual, predicted):
+      # CONFUSION MATRIX
+      PDactual = pd.Series(actual, name = "Actual");
+      PDpredicted = pd.Series(predicted, name = "Predicted")
+      print(pd.crosstab(PDactual, PDpredicted, rownames = ["Actual"], colnames = ["Predicted"], margins = True));
+
+      # % Correct
+      TotalCorrect, CorrectHypo, CorrectHyper, CorrectNo = 0, 0, 0, 0;
+      PredictedHypo, PredictedNo, PredictedHyper = 0, 0, 0;
+  
+      for i in range(len(actual)):
+        if(actual[i] == predicted[i]): 
+          TotalCorrect += 1
+          if(predicted[i] == "hypothyroid"): CorrectHypo += 1;
+          elif(predicted[i] == "hyperthyroid"): CorrectHyper += 1;
+          else: CorrectNo += 1;
+
+        if(predicted[i] == "hypothyroid"): PredictedHypo += 1;
+        elif(predicted[i] == "hyperthyroid"): PredictedHyper += 1;
+        else: PredictedNo += 1;
+
+
+      PercentCorrect = round((TotalCorrect/len(actual))*100, 2);
+      print("Total correctly predicted: " + str(PercentCorrect) + "%");
+      print("Total incorrectly predicted: " + str(round(100 - PercentCorrect, 2)) + "%");
+      print("Out of all patients that were predicted 'hypothyroid', correct % predictions were: " + str(round((CorrectHypo/PredictedHypo)*100, 2)) + "%");
+      print("Out of all patients that were predicted 'hyperthyroid', correct % predictions were: " + str(round((CorrectHyper/PredictedHyper)*100, 2)) + "%");
+      print("Out of all patients that were predicted 'no', correct % predictions were: " + str(round((CorrectNo/PredictedNo)*100, 2)) + "%");
+
   def main(self):
-    data = self.readCSV();
-    res = self.getAtts(data);
-    atts, classes = res[0], res[1];
     which = int(input("Testing [1] or training [2]? "));
     if(which == 1):
+      data = self.readCSV("test");
+      res = self.getAtts(data);
+      atts, classes = res[0], res[1];
       ########################
       TempAtts = atts;
       del TempAtts[1];
@@ -146,12 +175,12 @@ class main():
           predicted.append("no");
           actual.append(classes[i]);
       
+      self.results(actual, predicted);
 
-      # CONFUSION MATRIX
-      PDactual = pd.Series(actual, name = "Actual");
-      PDpredicted = pd.Series(predicted, name = "Predicted")
-      print(pd.crosstab(PDactual, PDpredicted, rownames = ["Actual"], colnames = ["Predicted"], margins = True));
     else:
+      data = self.readCSV("training");
+      res = self.getAtts(data);
+      atts, classes = res[0], res[1];
       self.generalProbabilities(classes, False);
       self.saveGeneralProbs();
 
