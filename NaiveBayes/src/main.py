@@ -71,7 +71,7 @@ class main():
         "no": no.GeneralProbability
       };
 
-      with open("../../GenProbs.json", "w") as file:
+      with open("../../NaiveBayes/GenProbs.json", "w") as file:
         json.dump(dict, file);
       
       return True;
