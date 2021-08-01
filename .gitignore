@@ -2,3 +2,5 @@
 /NaiveBayes/src/discretization.py
 /NaiveBayes/src/__pycache__
 NeuralNetworks/src/f.py
+/NeuralNetworks/test.csv
+/NeuralNetworks/training.csv
