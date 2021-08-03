@@ -1,5 +1,5 @@
 ########### Random Info ###########
-# Naive Bayes Classifier EPQ
+# Neural Networks Classifier EPQ
 # Saatvik Kambhampati
 # 14/07/2021 - 
 ###################################
