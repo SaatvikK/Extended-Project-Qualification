@@ -19,10 +19,10 @@ attributes = ["Age", "Sex", "TSH", "T3", "TT4", "T4U", "FTI"]; #Sex: male: 1, fe
 classifications = ["hypothyroid", "hyperthyroid", "no"];
 
 # Read CSV
-train = pd.read_csv("../training.csv");
-test = pd.read_csv("../test.csv");
-TrainSpecies = train.pop('Class'); #Hypo: 1, Hyper: 2, No: 3
-TestSpecies = test.pop('Class');
+train = pd.read_csv("/content/training.csv");
+test = pd.read_csv("/content/test.csv");
+TrainLabels = train.pop('Class'); #Hypo: 1, Hyper: 2, No: 3
+TestLabels = test.pop('Class');
 print(train)
 
 # Input Function
@@ -41,6 +41,7 @@ for i in train.keys():
 
 print(FeatureColumns);
 
+
 # Creating neural network model, 2 hidden layers, with 39 and 10 hidden node each.
 model = tf.estimator.DNNClassifier(
   feature_columns = FeatureColumns,
@@ -50,13 +51,26 @@ model = tf.estimator.DNNClassifier(
 
 # Training the model
 model.train(
-  input_fn = lambda: inputFunc(train, TrainSpecies, training = True),
+  input_fn = lambda: inputFunc(train, TrainLabels, training = True),
   steps = 5000
 );
 
 # Testing the model
 res = model.evaluate(
-    input_fn = lambda: inputFunc(test, TestSpecies, training = False)
+    input_fn = lambda: inputFunc(test, TestLabels, training = False)
 );
 
 print('\nTest set accuracy: {accuracy:0.3f}\n'.format(**res))
+
+#List of prediction labels
+
+predictions = list(model.predict(input_fn = lambda: inputFunc(test, TestLabels, training = False)));
+
+
+PredictionLabels = [];
+for i in range(len(predictions)):
+  PredictionLabels.append(np.argmax(predictions[i]["probabilities"]));
+
+PDactual = pd.Series(TestLabels, name = "Actual");
+PDpredicted = pd.Series(PredictionLabels, name = "Predicted");
+print(pd.crosstab(PDactual, PDpredicted, rownames = ["Actual"], colnames = ["Predicted"], margins = True));
