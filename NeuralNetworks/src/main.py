@@ -21,7 +21,7 @@ classifications = ["hypothyroid", "hyperthyroid", "no"];
 # Read CSV
 train = pd.read_csv("/content/training.csv");
 test = pd.read_csv("/content/test.csv");
-TrainLabels = train.pop('Class'); #Hypo: 1, Hyper: 2, No: 3
+TrainLabels = train.pop('Class'); #No: 0, Hypo: 1, Hyper: 2
 TestLabels = test.pop('Class');
 print(train)
 
