@@ -1,6 +1,7 @@
 /NaiveBayes/src/f.py
 /NaiveBayes/src/discretization.py
 /NaiveBayes/src/__pycache__
-NeuralNetworks/src/f.py
+NeuralNetworks/src/class.py
+NeuralNetworks/src/sex.py
 /NeuralNetworks/test.csv
 /NeuralNetworks/training.csv
