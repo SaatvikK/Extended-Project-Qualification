@@ -5,3 +5,4 @@ NeuralNetworks/src/class.py
 NeuralNetworks/src/sex.py
 /NeuralNetworks/test.csv
 /NeuralNetworks/training.csv
+GenProbs.json

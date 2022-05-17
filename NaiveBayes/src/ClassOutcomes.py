@@ -73,7 +73,7 @@ class classOutcome():
     
       self.GeneralProbability = ThisClass/len(outcomes);
     else: #used for tesing
-      with open("../../GenProbs.json") as file:
+      with open("../GenProbs.json") as file:
         data = json.load(file);
         self.GeneralProbability = data[WhichClass];
 
